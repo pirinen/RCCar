@@ -141,9 +141,9 @@ uint8_t Off(uint8_t);
 void setup() {
 
   //led
-  //for (count=0;count<10;count++) {
-  //  pinMode(pinArray[count], OUTPUT);
-  //}
+  for (count=0;count<10;count++) {
+    pinMode(pinArray[count], OUTPUT);
+  }
   //voltage
   Serial.begin(9600);
 
@@ -164,9 +164,9 @@ void loop() {
 
       while ( d == 'l' ) { //Led while
         Led();
-        //char nimi[] = "Led";
-        //OffName(nimi);
-        Off(d);
+        char nimi[] = "Led";
+        d = OffName(d, nimi);
+        ////Off(d);
 
       } //Led while
       if ( d == 'e') {    //Calibration while
@@ -180,9 +180,9 @@ void loop() {
       else if ( d == 'v') {  //Voltage
         while ( d == 'v') {
           Voltage();
-          //char nimi[] = "Voltage";
-          //OffName(nimi);
-          Off(d);
+          char nimi[] = "Voltage";
+          d = OffName(d, nimi);
+          //d = Off(d);
 
         } //While
       }   //Voltage
@@ -190,9 +190,9 @@ void loop() {
         while ( d == 'a') {
           //Acceleration();
           accelerationLoop();
-          //char nimi[] = "Acceleration";
-          //OffName(nimi);
-          Off(d);
+          char nimi[] = "Acceleration";
+          d = OffName(d, nimi);
+          ////Off(d);
         } //While
       } //Acceleration
 
