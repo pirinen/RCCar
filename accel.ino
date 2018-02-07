@@ -103,12 +103,15 @@ void accelerationLoop() {
 
   //if (acc != acc2)
   //{
-  acc2 = acc;
-  Serial.print(" Acc = ");
-  Serial.print(acc, 2);
-  Serial.print(" m/s2 ");
-  Serial.println("");
-  //}
-  delay(250);
+  if ((millis() - delayTimeAcc) > 250) {
+    acc2 = acc;
+    Serial.print(" Acc = ");
+    Serial.print(acc, 2);
+    Serial.print(" m/s2 ");
+    Serial.println("");
+    //}
+    delayTimeAcc = millis();
+    //delay(250);
+  }
 }
 

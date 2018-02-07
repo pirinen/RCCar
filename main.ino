@@ -109,6 +109,14 @@
 //Calibration end
 #include "Wire.h"
 #include "elapsedMillis.h"
+#include "SevSeg.h"
+
+// Remote
+#include <IRremote.h>
+int RECV_PIN = 13;
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+// Remote
 
 #define    MPU9250_ADDRESS            0x68
 #define    MAG_ADDRESS                0x0C
@@ -128,10 +136,17 @@ float acc2;
 float matka;
 elapsedMillis elapsedmil;
 
+
+SevSeg sevseg; //Initiate a seven segment controller object
+uint8_t d;
 //Led
 int pinArray[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 int count = 0;
+int count2 = -1;
+int count3 = 12;
 int timer = 20;
+long delayTime;
+long delayTimeAcc;
 
 //void accelerationSetup(void);
 //void Voltage(void);
@@ -141,34 +156,114 @@ uint8_t Off(uint8_t);
 void setup() {
 
   //led
-  for (count=0;count<10;count++) {
+  for (count = 0; count < 10; count++) {
     pinMode(pinArray[count], OUTPUT);
   }
   //voltage
   Serial.begin(9600);
 
+  irrecv.enableIRIn(); // Start the receiver
+
   //Acceleration
   accelerationSetup();
+  //displaySetup();   //for voltage display
+
+  byte numDigits = 4;
+  byte digitPins[] = {30, 32, 34, 36};
+  byte segmentPins[] = {38, 40, 42, 44, 46, 48, 50, 52};
+  sevseg.begin(COMMON_CATHODE, numDigits, digitPins, segmentPins);
+  sevseg.setBrightness(90);
 
   //calibrationSetup();
   //Serial.begin(115200);
 
 }   //setup() end
-
+//int res = Voltage(res);
 void loop() {
+  //int res = Voltage(res);
+  int luku;
+  //res = Voltage(res);
+  //Serial.println(res);
+  //sevseg.setNumber(res, 3);
+  //sevseg.refreshDisplay(); // Must run repeatedly
 
+  //Remote
+  if (irrecv.decode(&results))
+  {
+    Serial.println(results.value/*, HEX*/);
+    irrecv.resume(); // Receive the next value
+    luku = results.value;
+
+    Serial.print("luku : ");
+    Serial.println(luku);
+
+
+  }
+  //1 = 2534850111
+  //2 = 1033561079
+  //3 = 1635910171
+  //0 = 3238126971
+
+  //Remote
+  //if ( luku == -16833 ) { //Led while
+  //Led();
+  //}
+  //else if ( luku == -6789) {
+  //char nimi[] = "Led";
+  //d = OffName(d, nimi);
+  ////Off(d);
+
+  //delayTime = millis();
+  //Serial.println(delayTime);
   if ( Serial.available() ) {
-    uint8_t d;
+
+    //uint8_t d;
     while ( Serial.available() ) {
       d = Serial.read();
-
       while ( d == 'l' ) { //Led while
-        Led();
+        
+        displayLoop();
+        accelerationLoop();
+        
+        if ((millis() - delayTime) > 80) { //timer = 20, 0.02sec
+          if (count2 < 12) {
+            count2++;
+            //count3++;
+            //Serial.print("Count2 : ");
+            //Serial.println(count2);
+            digitalWrite(pinArray[count2], HIGH);
+
+            if (count2 > 2) {
+              digitalWrite(pinArray[count2 - 3], LOW);
+            }
+          }
+          if (count2 > 11) {
+
+            count3--;
+            //Serial.print("Count3 : ");
+            //Serial.println(count3);
+            digitalWrite(pinArray[count3], HIGH);
+
+            if (count3 < 10) {
+              digitalWrite(pinArray[count3 + 3], LOW);
+            }
+          }
+          delayTime = millis();
+        }
+        //Serial.println(millis());
+
         char nimi[] = "Led";
         d = OffName(d, nimi);
-        ////Off(d);
 
-      } //Led while
+        if (count2 == 12 && count3 == -3) { //led loop
+          count2 = -1;
+          count3 = 12;
+        }
+      }
+      //count2 = -1;  //Jatkuu minne jäi
+      //count3 = 12;
+
+      //Led while
       if ( d == 'e') {    //Calibration while
 
         //Calibration();
@@ -179,7 +274,8 @@ void loop() {
 
       else if ( d == 'v') {  //Voltage
         while ( d == 'v') {
-          Voltage();
+          //Voltage();
+          displayLoop();
           char nimi[] = "Voltage";
           d = OffName(d, nimi);
           //d = Off(d);

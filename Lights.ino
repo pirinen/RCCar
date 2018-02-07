@@ -27,6 +27,6 @@ void Led() {
 
 void LedOff() {
 
-  digitalWrite(pinArray[0], LOW);
-  digitalWrite(pinArray[1], LOW);
+  for (int i = 0; i < 10; i++)
+  digitalWrite(pinArray[i], LOW);
 }
