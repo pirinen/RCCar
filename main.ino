@@ -153,8 +153,29 @@ long delayTimeAcc;
 //void accelerationLoop(void);
 uint8_t Off(uint8_t);
 
+//Buttons
+// constants won't change. They're used here to set pin numbers:
+const int button26Pin = 26;     // the number of the pushbutton pin
+const int button28Pin = 28;     // the number of the pushbutton pin
+
+// variables will change:
+int buttonState26 = 0;         // variable for reading the pushbutton status
+int buttonState28 = 0;
+
+byte oldbutton26 = 0;
+byte oldbutton28 = 0;
+byte state26 = 0;
+byte state28 = 0;
+byte pressed26 = 0;
+byte pressed28 = 0;
+//Buttons
+
 void setup() {
 
+  //Buttons
+  pinMode(button26Pin, INPUT);
+  pinMode(button28Pin, INPUT);
+  //Buttons
   //led
   for (count = 0; count < 10; count++) {
     pinMode(pinArray[count], OUTPUT);
@@ -181,125 +202,149 @@ void setup() {
 //int res = Voltage(res);
 void loop() {
   //int res = Voltage(res);
-  int luku;
-  //res = Voltage(res);
-  //Serial.println(res);
-  //sevseg.setNumber(res, 3);
-  //sevseg.refreshDisplay(); // Must run repeatedly
+  //int luku;
 
-  //Remote
-  if (irrecv.decode(&results))
-  {
-    Serial.println(results.value/*, HEX*/);
-    irrecv.resume(); // Receive the next value
-    luku = results.value;
+  //Buttons
+  // read the state of the pushbutton value:
+  buttonState26 = digitalRead(button26Pin);
+  buttonState28 = digitalRead(button28Pin);
 
-    Serial.print("luku : ");
-    Serial.println(luku);
+  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
 
-
+  if (buttonState26 == LOW) {
+    pressed26 = 0;
   }
-  //1 = 2534850111
-  //2 = 1033561079
-  //3 = 1635910171
-  //0 = 3238126971
 
-  //Remote
-  //if ( luku == -16833 ) { //Led while
-  //Led();
-  //}
-  //else if ( luku == -6789) {
-  //char nimi[] = "Led";
-  //d = OffName(d, nimi);
-  ////Off(d);
+  //Button26
+  if (buttonState26 == HIGH && !oldbutton26 && !pressed26) {
 
-  //delayTime = millis();
-  //Serial.println(delayTime);
-  if ( Serial.available() ) {
+    if (state26 == 0)
+    {
+      Serial.println("Button26 On");
+      state26 = 1;
+      //while (buttonState26 == HIGH) {Led();}
 
-    //uint8_t d;
-    while ( Serial.available() ) {
-      d = Serial.read();
-      while ( d == 'l' ) { //Led while
-        
-        displayLoop();
-        accelerationLoop();
-        
-        if ((millis() - delayTime) > 80) { //timer = 20, 0.02sec
-          if (count2 < 12) {
-            count2++;
-            //count3++;
-            //Serial.print("Count2 : ");
-            //Serial.println(count2);
-            digitalWrite(pinArray[count2], HIGH);
 
-            if (count2 > 2) {
-              digitalWrite(pinArray[count2 - 3], LOW);
-            }
-          }
-          if (count2 > 11) {
+    }
+    else
+    {
+      state26 = 0;
+    }
+    oldbutton26 = 1;
+    pressed26 = 1;
 
-            count3--;
-            //Serial.print("Count3 : ");
-            //Serial.println(count3);
-            digitalWrite(pinArray[count3], HIGH);
+  } else if (buttonState26 == HIGH && oldbutton26 && !pressed26) {
 
-            if (count3 < 10) {
-              digitalWrite(pinArray[count3 + 3], LOW);
-            }
-          }
-          delayTime = millis();
-        }
-        //Serial.println(millis());
+    if (state26 == 1)
+    {
+      Serial.println("Button26 Off");
+      state26 = 0;
+      LedOff();
+    }
+    else
+    {
+      state26 = 1;
+    }
+    oldbutton26 = 0;
+    pressed26 = 1;
+  } //Button26
 
-        char nimi[] = "Led";
-        d = OffName(d, nimi);
+  if (buttonState28 == LOW) {
+    //Serial.println("28 low");
+    pressed28 = 0;
+  }
 
-        if (count2 == 12 && count3 == -3) { //led loop
-          count2 = -1;
-          count3 = 12;
-        }
-      }
-      //count2 = -1;  //Jatkuu minne jäi
-      //count3 = 12;
+  //Button28
+  if (buttonState28 == HIGH && !oldbutton28 && !pressed28) {
 
-      //Led while
-      if ( d == 'e') {    //Calibration while
+    if (state28 == 0)
+    {
+      Serial.println("Button28 On");
+      //displayLoop();
+      state28 = 1;
+    }
+    else
+    {
+      state28 = 0;
+    }
+    oldbutton28 = 1;
+    pressed28 = 1;
 
-        //Calibration();
-        //Calibration calib;
-        //Calibration.calibrationSetup();
-        //calibrationSetup();
-      } //Calibration while
+  } else if (buttonState28 == HIGH && oldbutton28 && !pressed28) {
 
-      else if ( d == 'v') {  //Voltage
-        while ( d == 'v') {
-          //Voltage();
+    if (state28 == 1)
+    {
+      Serial.println("Button28 Off");
+      state28 = 0;
+    }
+    else
+    {
+      state28 = 1;
+    }
+    oldbutton28 = 0;
+    pressed28 = 1;
+  } //Button28
+
+  if (buttonState26 == LOW && state26) {
+    Led();
+  }
+  if (buttonState28 == LOW && state28) {
+    displayLoop();
+  }
+  //Buttons
+
+  /*
+    if ( Serial.available() ) {
+
+      //uint8_t d;
+      while ( Serial.available() ) {
+        d = Serial.read();
+        while ( d == 'l' ) { //Led while
+
+          Led();
           displayLoop();
-          char nimi[] = "Voltage";
-          d = OffName(d, nimi);
-          //d = Off(d);
-
-        } //While
-      }   //Voltage
-      else if ( d == 'a') { //Acceleration
-        while ( d == 'a') {
-          //Acceleration();
           accelerationLoop();
-          char nimi[] = "Acceleration";
+
+
+          char nimi[] = "Led";
           d = OffName(d, nimi);
-          ////Off(d);
-        } //While
-      } //Acceleration
 
 
-    } //while Serial
-  }   //if Serial
+        }
 
-  //Led();
-  //Voltage();
 
-  //calibrationLoop();
+        //Led while
+        if ( d == 'e') {    //Calibration while
 
+          //Calibration();
+          //Calibration calib;
+          //Calibration.calibrationSetup();
+          //calibrationSetup();
+        } //Calibration while
+
+        else if ( d == 'v') {  //Voltage
+          while ( d == 'v') {
+            //Voltage();
+            displayLoop();
+            char nimi[] = "Voltage";
+            d = OffName(d, nimi);
+            //d = Off(d);
+
+          } //While
+        }   //Voltage
+        else if ( d == 'a') { //Acceleration
+          while ( d == 'a') {
+            //Acceleration();
+            accelerationLoop();
+            char nimi[] = "Acceleration";
+            d = OffName(d, nimi);
+            ////Off(d);
+          } //While
+        } //Acceleration
+
+
+      } //while Serial
+    }   //if Serial
+  */
 }   //loop() end
 
