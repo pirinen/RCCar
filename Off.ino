@@ -1,5 +1,5 @@
 uint8_t OffName(uint8_t d, char nimi[]) {
-
+  Serial.println("Off start");
   while (Serial.available()) {
 
     uint8_t k;

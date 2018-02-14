@@ -1,6 +1,6 @@
 void Led() {
 
-
+  //Serial.println("Led start");
   if ((millis() - delayTime) > 80) { //timer = 20, 0.02sec
     if (count2 < 12) {
       count2++;
@@ -31,7 +31,7 @@ void Led() {
 
 void LedOff() {
 
-
+  Serial.println("LedOff start");
   for (int i = 0; i < 10; i++)
     digitalWrite(pinArray[i], LOW);
 

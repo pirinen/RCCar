@@ -24,6 +24,7 @@
   float matka;
   elapsedMillis elapsedmil;
 */
+/*
 void I2Cread(uint8_t, uint8_t, uint8_t, uint8_t*);
 void I2CwriteByte(uint8_t, uint8_t, uint8_t);
 void accelerationSetup(void);
@@ -55,6 +56,7 @@ void I2CwriteByte(uint8_t Address, uint8_t Register, uint8_t Data) {
 
 
 void accelerationSetup() {
+  Serial.println("Acc setup");
   // Arduino initializations
   Wire.begin();
   //Serial.begin(115200);
@@ -75,6 +77,7 @@ long int cpt = 0;
 
 void accelerationLoop() {
   // put your main code here, to run repeatedly:
+  Serial.println("Acc loop start");
   unsigned long StartTime;
   unsigned long CurrentTime;
   unsigned long ElapsedTime;
@@ -114,4 +117,4 @@ void accelerationLoop() {
     //delay(250);
   }
 }
-
+*/
