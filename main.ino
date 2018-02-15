@@ -35,7 +35,7 @@ int switchState = 0;
 
 /****************** User Config ***************************/
 /***      Set this radio as radio number 0 or 1         ***/
-bool radioNumber = 1;
+bool radioNumber = 0;
 
 /* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
 RF24 radio(12, 13);
@@ -80,6 +80,7 @@ long SenddelayTime; //Send data
 long delayTimeAcc;
 long delayTimeVol;
 long delayNopeus;
+long delayTimeBrake;
 
 float v1;
 float kmh1;
@@ -107,7 +108,7 @@ byte pressed28 = 0;
 //Buttons
 
 void setup() {
-  
+
   Serial.begin(115200);
   displaySetup();   //for voltage display
 
@@ -136,7 +137,7 @@ void setup() {
 
   // Set the PA Level low to prevent power supply related issues since this is a
   // getting_started sketch, and the likelihood of close proximity of the devices. RF24_PA_MAX is default.
-  radio.setPALevel(RF24_PA_MAX);
+  radio.setPALevel(RF24_PA_LOW);
 
   // Open a writing and reading pipe on each radio, with opposite addresses
   if (radioNumber) {
@@ -166,14 +167,14 @@ void loop() {
   NopeusLoop();
   /****************** Ping Out Role ***************************/
 
-  if (1 == 1)  {
+  if (role == 0)  {
     if ((millis() - SenddelayTime) > 1000) {
       radio.stopListening();                                    // First, stop listening so we can talk.
 
       //v1 = displayLoop(v1); //get voltage
       kmh1 = getKMH(kmh1);
-      Serial.print("V1 : ");
-      Serial.println(v1);
+      //Serial.print("V1 : ");
+      //Serial.println(v1);
 
       Serial.println(F("Now sending"));
 
@@ -182,6 +183,7 @@ void loop() {
       if (!radio.write( &kmh1, sizeof(float) )) {
         Serial.println(F("failed"));
       }
+
 
       radio.startListening();                                    // Now, continue listening
 
@@ -194,7 +196,7 @@ void loop() {
           break;
         }
       }
-
+/*
       if ( timeout ) {                                            // Describe the results
         Serial.println(F("Failed, response timed out."));
       } else {
@@ -210,7 +212,7 @@ void loop() {
         Serial.println(got_value);
 
       }
-
+*/
       SenddelayTime = millis();
     }
   }
@@ -297,6 +299,7 @@ void loop() {
       Serial.println("Button26 Off");
       state26 = 0;
       LedOff();
+      role = 0;
     }
     else
     {
@@ -319,6 +322,7 @@ void loop() {
       Serial.println("Button28 On");
       displayLoop();
       state28 = 1;
+      role = 1; //send off
     }
     else
     {
@@ -331,7 +335,9 @@ void loop() {
 
     if (state28 == 1)
     {
-      Serial.println("Button28 Off");
+      Serial.println("Button28 Off"); //display off
+      displayOff();
+      role = 0; //send on
       state28 = 0;
     }
     else
@@ -344,9 +350,12 @@ void loop() {
 
   if (buttonState26 == LOW && state26) {
     Led();
+    role = 1; //send off
+    
   }
   if (buttonState28 == LOW && state28) {
     displayLoop();
+    role = 1; //send off
   }
   //Buttons
 

@@ -22,7 +22,7 @@ void NopeusSetup() {
   circumference = 2 * 3.141593 * radius;
   //pinMode(1, OUTPUT); //tx, display?
   pinMode(reed, INPUT);
-  pinMode(51, OUTPUT); //Led
+  pinMode(47, OUTPUT); //Led
 
   // TIMER SETUP- the timer interrupt allows preceise timed measurements of the reed switch
   //for mor info about configuration of arduino timers see http://arduino.cc/playground/Code/Timer1
@@ -81,7 +81,7 @@ float getKMH (float kmh)
 }
 
 void displayMPH() {
-  
+
   Serial.write(12);//clear
   Serial.write("Speed = ");
   Serial.write(13);//start a new line
@@ -91,25 +91,30 @@ void displayMPH() {
 }
 
 void NopeusLoop() {
+
   //print mph once a second
   if ((millis() - delayNopeus) > 1000) {
     displayMPH();
     delayNopeus = millis();
   }
-  digitalWrite(51, LOW);
+  digitalWrite(47, LOW);
   //Serial.println(mph);
   //Serial.println(mph2);
-  mph3 = mph;
+  //mph3 = mph;
   if (mph < mph2) {
 
-    //Serial.println ("pienenee");
+    Serial.println ("pienenee");
 
-    digitalWrite(51, HIGH);
+    if ((millis() - delayTimeBrake) > 1000) {
+
+      digitalWrite(47, HIGH);
+      delayTimeBrake = millis();
+
+    }
   }
+
   mph2 = mph;
+
 }
-
-
-
 
 
