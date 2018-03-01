@@ -177,7 +177,7 @@ void loop() {
       //Serial.println(v1);
 
       Serial.println(F("Now sending"));
-
+      
       //unsigned long start_time = micros();                             // Take the time, and send it.  This will block until complete
 
       if (!radio.write( &kmh1, sizeof(float) )) {
@@ -196,23 +196,23 @@ void loop() {
           break;
         }
       }
-/*
-      if ( timeout ) {                                            // Describe the results
-        Serial.println(F("Failed, response timed out."));
-      } else {
-        //unsigned long got_time;                                // Grab the response, compare, and send to debugging spew
-        float got_value;
-        radio.read( &got_value, sizeof(float) );
-        //unsigned long end_time = micros();
+      /*
+            if ( timeout ) {                                            // Describe the results
+              Serial.println(F("Failed, response timed out."));
+            } else {
+              //unsigned long got_time;                                // Grab the response, compare, and send to debugging spew
+              float got_value;
+              radio.read( &got_value, sizeof(float) );
+              //unsigned long end_time = micros();
 
-        // Spew it
-        Serial.print(F("Sent "));
-        Serial.print(kmh1);
-        Serial.print(F(", Got response "));
-        Serial.println(got_value);
+              // Spew it
+              Serial.print(F("Sent "));
+              Serial.print(kmh1);
+              Serial.print(F(", Got response "));
+              Serial.println(got_value);
 
-      }
-*/
+            }
+      */
       SenddelayTime = millis();
     }
   }
@@ -351,7 +351,7 @@ void loop() {
   if (buttonState26 == LOW && state26) {
     Led();
     role = 1; //send off
-    
+
   }
   if (buttonState28 == LOW && state28) {
     displayLoop();

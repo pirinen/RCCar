@@ -89,6 +89,10 @@ void displayMPH() {
   Serial.println(" km/h ");
   //Serial.write("0.00 MPH ");
 }
+//getKMH(kmh)
+//Serial.print("Vauhti : ");
+//Serial.println(getKMH(kmh1));
+
 
 void NopeusLoop() {
 

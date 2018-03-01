@@ -50,8 +50,10 @@ void displayLoop() {
     //delayTimeVol = millis();
   //}
 
-
-  sevseg.setNumber(voltage, 3);
+  //kmh1 = getKMH();
+  sevseg.setNumber(kmh1, 3);
+  Serial.print("Nopeus : ");
+  Serial.println(kmh1);
   sevseg.refreshDisplay(); // Must run repeatedly
   //return v1;
 }
